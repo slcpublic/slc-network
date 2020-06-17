@@ -31,8 +31,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     api 'com.liulishuo.filedownloader:library:1.7.7'
     api 'cn.dreamtobe.filedownloader:filedownloader-okhttp3-connection:1.1.0'
-    api 'android.slc:or:0.0.6'
-
+    api 'android.slc:or:0.0.7'
     api 'com.arialyy.aria:core:3.8.6'
     annotationProcessor 'com.arialyy.aria:compiler:3.8.6'
 }
