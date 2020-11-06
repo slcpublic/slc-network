@@ -1,35 +1,39 @@
 package android.slc.network;
 
-import com.arialyy.annotations.Download;
+import android.util.Log;
+
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.download.DownloadReceiver;
+import com.arialyy.aria.core.download.DownloadTaskListener;
 import com.arialyy.aria.core.download.target.HttpBuilderTarget;
+import com.arialyy.aria.core.scheduler.TaskSchedulers;
 import com.arialyy.aria.core.task.DownloadTask;
 
 /**
  * @author slc
  * @date 2019/11/21 11:17
  */
-public class SimpleAriaDownload implements IAriaDownload {
-    protected String TAG = "IAriaDownload";
+public class SimpleAriaDownload implements DownloadTaskListener {
     protected long taskId;
     private boolean isRegister;
     private AriaDownloadListener ariaDownloadListener;
+    private DownloadReceiver downloadReceiver;
 
     public SimpleAriaDownload() {
     }
 
-    @Override
-    public DownloadReceiver getDownloadReceiver() {
-        return Aria.download(this);
+    public synchronized DownloadReceiver getDownloadReceiver() {
+        if (downloadReceiver == null) {
+            downloadReceiver = Aria.download(this);
+            //ProxyHelper.getInstance().checkProxyType(this.getClass());
+        }
+        return downloadReceiver;
     }
 
-    @Override
     public void setDownloadListener(AriaDownloadListener downloadListener) {
         this.ariaDownloadListener = downloadListener;
     }
 
-    @Override
     public long create(HttpBuilderTarget httpBuilderTarget) {
         if (!isRegister) {
             isRegister = true;
@@ -38,7 +42,6 @@ public class SimpleAriaDownload implements IAriaDownload {
         return taskId = httpBuilderTarget.create();
     }
 
-    @Override
     public long add(HttpBuilderTarget httpBuilderTarget) {
         if (!isRegister) {
             isRegister = true;
@@ -47,97 +50,102 @@ public class SimpleAriaDownload implements IAriaDownload {
         return taskId = httpBuilderTarget.add();
     }
 
-    @Download.onWait
     @Override
     public void onWait(DownloadTask task) {
+    }
+
+    @Override
+    public void onPre(DownloadTask task) {
+    }
+
+    @Override
+    public void onTaskPre(DownloadTask task) {
         if (ariaDownloadListener != null) {
             ariaDownloadListener.onWait(task);
         }
     }
 
-    @Download.onPre
     @Override
-    public void onPre(DownloadTask task) {
+    public void onTaskResume(DownloadTask task) {
         if (ariaDownloadListener != null) {
             ariaDownloadListener.onPre(task);
         }
     }
 
-    @Download.onTaskStart
     @Override
-    public void taskStart(DownloadTask task) {
+    public void onTaskStart(DownloadTask task) {
         if (ariaDownloadListener != null) {
             ariaDownloadListener.taskStart(task);
         }
     }
 
-    @Download.onTaskRunning
     @Override
-    public void running(DownloadTask task) {
-        if (ariaDownloadListener != null) {
-            ariaDownloadListener.running(task);
-        }
-    }
-
-    @Download.onTaskResume
-    @Override
-    public void taskResume(DownloadTask task) {
-        if (ariaDownloadListener != null) {
-            ariaDownloadListener.taskResume(task);
-        }
-    }
-
-    @Download.onTaskStop
-    @Override
-    public void taskStop(DownloadTask task) {
+    public void onTaskStop(DownloadTask task) {
         if (ariaDownloadListener != null) {
             ariaDownloadListener.taskStop(task);
         }
     }
 
-    @Download.onTaskCancel
     @Override
-    public void taskCancel(DownloadTask task) {
-        if (isRegister) {
-            isRegister = false;
-            unRegister();
-        }
+    public void onTaskCancel(DownloadTask task) {
         if (ariaDownloadListener != null) {
             ariaDownloadListener.taskCancel(task);
         }
-    }
-
-    @Download.onTaskFail
-    @Override
-    public void taskFail(DownloadTask task) {
         if (isRegister) {
             isRegister = false;
             unRegister();
         }
+    }
+
+    @Override
+    public void onTaskFail(DownloadTask task, Exception e) {
         if (ariaDownloadListener != null) {
             ariaDownloadListener.taskFail(task);
         }
-    }
-
-    @Download.onTaskComplete
-    @Override
-    public void taskComplete(DownloadTask task) {
         if (isRegister) {
             isRegister = false;
             unRegister();
         }
+    }
+
+    @Override
+    public void onTaskComplete(DownloadTask task) {
         if (ariaDownloadListener != null) {
             ariaDownloadListener.taskComplete(task);
+        }
+        if (isRegister) {
+            isRegister = false;
+            unRegister(true);
         }
     }
 
     @Override
-    public void unRegister() {
-        if (taskId != -1) {
-            Aria.download(this).load(taskId).removeRecord();
-            Aria.download(this).load(taskId).cancel();
+    public void onTaskRunning(DownloadTask task) {
+        if (ariaDownloadListener != null) {
+            ariaDownloadListener.running(task);
         }
-        Aria.download(this).unRegister();
+    }
+
+    @Override
+    public void onNoSupportBreakPoint(DownloadTask task) {
+        Log.i("simpleAriaDownload2", "onNoSupportBreakPoint");
+    }
+
+    public void unRegister() {
+        unRegister(false);
+    }
+
+    public void unRegister(boolean isComplete) {
+        if (downloadReceiver != null) {
+            if (taskId != -1) {
+                if (!isComplete) {
+                    downloadReceiver.load(taskId).cancel();
+                }
+                downloadReceiver.load(taskId).removeRecord();
+            }
+            downloadReceiver.unRegister();
+            TaskSchedulers.getInstance().unRegister(this);
+        }
         isRegister = false;
     }
 
