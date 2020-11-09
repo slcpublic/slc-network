@@ -15,9 +15,9 @@ import com.arialyy.aria.core.task.DownloadTask;
  */
 public class SimpleAriaDownload implements DownloadTaskListener {
     protected long taskId;
-    private boolean isRegister;
-    private AriaDownloadListener ariaDownloadListener;
-    private DownloadReceiver downloadReceiver;
+    protected boolean isRegister;
+    protected AriaDownloadListener ariaDownloadListener;
+    protected DownloadReceiver downloadReceiver;
 
     public SimpleAriaDownload() {
     }
