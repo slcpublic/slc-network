@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.sunlunchang1994'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -20,7 +18,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-
     }
 
 }
@@ -28,9 +25,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.appcompat:appcompat:$androidXAppcompat"
-    api project(path: ':okdownload')
-    api project(path: ':okdownload-connection-okhttp')
-    api 'android.slc:or:0.0.7'
-    api 'com.arialyy.aria:core:3.8.14'
-    annotationProcessor 'com.arialyy.aria:compiler:3.8.14'
+    compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 }

@@ -27,3 +27,21 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    // Sdk and tools
+    // Support library and architecture components support minSdk 14 and above.
+    minSdkVersion = 19
+    targetSdkVersion = 28
+    compileSdkVersion = 30
+    versionCode = 7
+    versionName = "1.6"
+
+    // App dependencies
+    androidXAppcompat = '+'
+    androidXActivity = '+'
+    androidXFragment = '+'
+    androidXLifecycle = '2.+'
+    androidXConstraintlayout = '+'
+    googleAndroidMaterial = '1.+'
+}
