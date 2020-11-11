@@ -34,8 +34,8 @@ ext {
     minSdkVersion = 19
     targetSdkVersion = 28
     compileSdkVersion = 30
-    versionCode = 7
-    versionName = "1.8"
+    versionCode = 10
+    versionName = "2.0"
 
     // App dependencies
     androidXAppcompat = '+'
