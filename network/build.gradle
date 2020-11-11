@@ -28,8 +28,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.appcompat:appcompat:$androidXAppcompat"
-    api project(path: ':okdownload')
-    api project(path: ':okdownload-connection-okhttp')
+    compileOnly project(path: ':okdownload')
+    compileOnly project(path: ':okdownload-connection-okhttp')
     api 'android.slc:or:0.0.7'
     api 'com.arialyy.aria:core:3.8.14'
     annotationProcessor 'com.arialyy.aria:compiler:3.8.14'
