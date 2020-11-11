@@ -32,4 +32,11 @@ public abstract class SimpleDownloadByOkListener extends DownloadListener3 {
 
     }
 
+    @Override
+    public void progress(@NonNull DownloadTask task, long currentOffset, long totalLength) {
+        double percentage = totalLength == 0 ? 0 : (float) currentOffset / totalLength * 100;
+        progress(task, (int) percentage, currentOffset, totalLength);
+    }
+
+    protected abstract void progress(@NonNull DownloadTask task, int percentage, long currentOffset, long totalLength);
 }
