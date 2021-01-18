@@ -34,8 +34,8 @@ ext {
     minSdkVersion = 19
     targetSdkVersion = 28
     compileSdkVersion = 30
-    versionCode = 13
-    versionName = "2.0.3"
+    versionCode = 14
+    versionName = "2.0.4"
 
     // App dependencies
     androidXAppcompat = '+'
@@ -44,4 +44,5 @@ ext {
     androidXLifecycle = '2.+'
     androidXConstraintlayout = '+'
     googleAndroidMaterial = '1.+'
+    okDownload = '1.0.7+'
 }
