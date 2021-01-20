@@ -70,7 +70,9 @@ public class SimpleDownloadService extends Service implements SimpleDownloadMana
 
     @Override
     public void onNotifyDownload(DownloadTask downloadTask) {
-        notifyDownloadUpdate(downloadTask, getDownloadState(downloadTask));
+        DownloadState downloadState = getDownloadState(downloadTask);
+        downloadState.setState(DownloadState.P_WAITING);
+        notifyDownloadUpdate(downloadTask, downloadState);
         serialQueue.enqueue(downloadTask);
     }
 
