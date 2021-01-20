@@ -16,17 +16,6 @@ import com.liulishuo.okdownload.DownloadTask;
 public class SimpleDownloadService extends Service implements SimpleDownloadManager.OnNotifyDownloadTaskListener {
     protected final SimpleDownloadByOkListener queueDownloadByOkListener = new SimpleDownloadByOkListener() {
 
-        private DownloadState getDownloadState(@NonNull DownloadTask task) {
-            DownloadState downloadState = SimpleDownloadManager.getInstance().downloadStateArrayMapOf.get(task);
-            if (downloadState == null) {
-                downloadState = new DownloadStateImp();
-            }
-            return downloadState;
-        }
-
-        private void notifyDownloadUpdate(@NonNull DownloadTask task, DownloadState downloadState) {
-            SimpleDownloadManager.getInstance().downloadStateArrayMapOf.put(task, downloadState);
-        }
 
         @Override
         protected void started(@NonNull DownloadTask task) {
@@ -81,7 +70,20 @@ public class SimpleDownloadService extends Service implements SimpleDownloadMana
 
     @Override
     public void onNotifyDownload(DownloadTask downloadTask) {
+        notifyDownloadUpdate(downloadTask, getDownloadState(downloadTask));
         serialQueue.enqueue(downloadTask);
+    }
+
+    private DownloadState getDownloadState(@NonNull DownloadTask task) {
+        DownloadState downloadState = SimpleDownloadManager.getInstance().downloadStateArrayMapOf.get(task);
+        if (downloadState == null) {
+            downloadState = new DownloadStateImp();
+        }
+        return downloadState;
+    }
+
+    private void notifyDownloadUpdate(@NonNull DownloadTask task, DownloadState downloadState) {
+        SimpleDownloadManager.getInstance().downloadStateArrayMapOf.put(task, downloadState);
     }
 
     @Override
