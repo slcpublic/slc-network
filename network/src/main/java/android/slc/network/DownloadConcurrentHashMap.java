@@ -43,7 +43,7 @@ public class DownloadConcurrentHashMap extends ConcurrentHashMap<DownloadTask, D
         onMapChangedCallbackList.clear();
     }
 
-    interface OnMapChangedCallback {
+    public interface OnMapChangedCallback {
         void onDownloadChanged(DownloadTask downloadTask, DownloadState downloadState);
     }
 
