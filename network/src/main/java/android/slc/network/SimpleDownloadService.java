@@ -15,6 +15,7 @@ import com.liulishuo.okdownload.DownloadTask;
  */
 public class SimpleDownloadService extends Service implements SimpleDownloadManager.OnNotifyDownloadTaskListener {
     protected final SimpleDownloadByOkListener queueDownloadByOkListener = new SimpleDownloadByOkListener() {
+
         private DownloadState getDownloadState(@NonNull DownloadTask task) {
             DownloadState downloadState = SimpleDownloadManager.getInstance().downloadStateArrayMapOf.get(task);
             if (downloadState == null) {
@@ -29,7 +30,7 @@ public class SimpleDownloadService extends Service implements SimpleDownloadMana
 
         @Override
         protected void started(@NonNull DownloadTask task) {
-            DownloadState downloadState = SimpleDownloadManager.getInstance().downloadStateArrayMapOf.get(task);
+            DownloadState downloadState = getDownloadState(task);
             downloadState.setState(DownloadState.P_WAITING);
             notifyDownloadUpdate(task, downloadState);
         }
