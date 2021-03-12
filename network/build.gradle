@@ -34,5 +34,5 @@ dependencies {
     api "com.liulishuo.okdownload:okdownload:$okDownload"
     api "com.liulishuo.okdownload:okhttp:$okDownload"
     compileOnly project(path: ':okdownload-fix-bug')
-    api 'android.slc:or:0.0.9'
+    api 'android.slc:or:0.1.2'
 }
