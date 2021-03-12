@@ -1,5 +1,6 @@
-apply plugin: 'com.android.library'
+apply from: "${project.rootDir}/code_module_config.gradle"
 apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.sunlunchang1994'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -25,7 +26,6 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:$androidXAppcompat"
     implementation "com.squareup.okhttp3:okhttp:4.2.0"
     implementation "com.liulishuo.okdownload:okdownload:$okDownload"
 }
