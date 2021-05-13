@@ -29,7 +29,15 @@ public class SimpleDownloadManager {
         }
     }
 
+    public void cancelCurrentTask() {
+        if (onNotifyDownloadTaskListener != null) {
+            onNotifyDownloadTaskListener.onNotifyCancelCurrentTask();
+        }
+    }
+
     public interface OnNotifyDownloadTaskListener {
         void onNotifyDownload(DownloadTask downloadTask);
+
+        void onNotifyCancelCurrentTask();
     }
 }

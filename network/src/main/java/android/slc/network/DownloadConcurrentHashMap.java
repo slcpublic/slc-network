@@ -21,6 +21,11 @@ public class DownloadConcurrentHashMap extends ConcurrentHashMap<DownloadTask, D
     @Override
     public DownloadState put(@NonNull DownloadTask key, @NonNull DownloadState value) {
         DownloadState result = super.put(key, value);
+        distributionCallback(key, value);
+        return result;
+    }
+
+    protected void distributionCallback(@NonNull DownloadTask key, @NonNull DownloadState value) {
         Iterator<OnMapChangedCallback> callbackIterator = onMapChangedCallbackList.iterator();
         while (callbackIterator.hasNext()) {
             OnMapChangedCallback callback = callbackIterator.next();
@@ -28,7 +33,6 @@ public class DownloadConcurrentHashMap extends ConcurrentHashMap<DownloadTask, D
                 callback.onDownloadChanged(key, value);
             }
         }
-        return result;
     }
 
     public void addOnMapChangedCallback(OnMapChangedCallback onMapChangedCallback) {

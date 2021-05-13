@@ -7,6 +7,7 @@ public interface DownloadState {
     int P_PAUSE = 3;        //暂停
     int P_ERROR = 4;        //错误
     int P_FINISH = 5;       //完成
+    int P_CANCEL = 6;       //取消
 
     int getProgress();
 

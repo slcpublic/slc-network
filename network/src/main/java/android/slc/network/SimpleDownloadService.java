@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.liulishuo.okdownload.DownloadSerialQueue;
 import com.liulishuo.okdownload.DownloadTask;
+import com.liulishuo.okdownload.OkDownload;
 
 /**
  * 简单的全局下载服务
@@ -16,40 +17,32 @@ import com.liulishuo.okdownload.DownloadTask;
 public class SimpleDownloadService extends Service implements SimpleDownloadManager.OnNotifyDownloadTaskListener {
     protected final SimpleDownloadByOkListener queueDownloadByOkListener = new SimpleDownloadByOkListener() {
 
-
         @Override
         protected void started(@NonNull DownloadTask task) {
-            DownloadState downloadState = getDownloadState(task);
-            downloadState.setState(DownloadState.P_WAITING);
-            notifyDownloadUpdate(task, downloadState);
+            SimpleDownloadService.this.started(task);
         }
 
         @Override
         protected void progress(@NonNull DownloadTask task, int percentage, long currentOffset, long totalLength) {
-            DownloadState downloadState = getDownloadState(task);
-            downloadState.setState(DownloadState.P_LOADING);
-            downloadState.setProgress(percentage);
-            downloadState.setCurrentOffset(currentOffset);
-            downloadState.setTotalLength(totalLength);
-            notifyDownloadUpdate(task, downloadState);
+            SimpleDownloadService.this.progress(task, percentage, currentOffset, totalLength);
         }
 
         @Override
         protected void completed(@NonNull DownloadTask task) {
-            DownloadState downloadState = getDownloadState(task);
-            downloadState.setState(DownloadState.P_FINISH);
-            downloadState.setProgress(100);
-            notifyDownloadUpdate(task, downloadState);
+            SimpleDownloadService.this.completed(task);
         }
 
         @Override
         protected void error(@NonNull DownloadTask task, @NonNull Exception e) {
-            DownloadState downloadState = getDownloadState(task);
-            downloadState.setState(DownloadState.P_ERROR);
-            downloadState.setProgress(-1);
-            downloadState.setException(e);
-            notifyDownloadUpdate(task, downloadState);
+            SimpleDownloadService.this.error(task, e);
         }
+
+        @Override
+        protected void canceled(@NonNull DownloadTask task) {
+            super.canceled(task);
+            SimpleDownloadService.this.canceled(task);
+        }
+
     };
     /**
      * 队列下载器
@@ -68,12 +61,56 @@ public class SimpleDownloadService extends Service implements SimpleDownloadMana
         SimpleDownloadManager.getInstance().setOnNotifyDownloadTaskListener(this);
     }
 
+    protected void started(@NonNull DownloadTask task) {
+        DownloadState downloadState = getDownloadState(task);
+        downloadState.setState(DownloadState.P_WAITING);
+        notifyDownloadUpdate(task, downloadState);
+    }
+
+    protected void progress(@NonNull DownloadTask task, int percentage, long currentOffset, long totalLength) {
+        DownloadState downloadState = getDownloadState(task);
+        downloadState.setState(DownloadState.P_LOADING);
+        downloadState.setProgress(percentage);
+        downloadState.setCurrentOffset(currentOffset);
+        downloadState.setTotalLength(totalLength);
+        notifyDownloadUpdate(task, downloadState);
+    }
+
+    protected void completed(@NonNull DownloadTask task) {
+        DownloadState downloadState = getDownloadState(task);
+        downloadState.setState(DownloadState.P_FINISH);
+        downloadState.setProgress(100);
+        notifyDownloadUpdate(task, downloadState);
+        SimpleDownloadManager.getInstance().downloadStateArrayMapOf.remove(task);
+
+    }
+
+    protected void error(@NonNull DownloadTask task, @NonNull Exception e) {
+        DownloadState downloadState = getDownloadState(task);
+        downloadState.setState(DownloadState.P_ERROR);
+        downloadState.setProgress(-1);
+        downloadState.setException(e);
+        notifyDownloadUpdate(task, downloadState);
+    }
+
+    protected void canceled(@NonNull DownloadTask task) {
+        DownloadState downloadState = getDownloadState(task);
+        downloadState.setState(DownloadState.P_CANCEL);
+        notifyDownloadUpdate(task, downloadState);
+        SimpleDownloadManager.getInstance().downloadStateArrayMapOf.remove(task);
+    }
+
     @Override
     public void onNotifyDownload(DownloadTask downloadTask) {
         DownloadState downloadState = getDownloadState(downloadTask);
         downloadState.setState(DownloadState.P_WAITING);
         notifyDownloadUpdate(downloadTask, downloadState);
         serialQueue.enqueue(downloadTask);
+    }
+
+    @Override
+    public void onNotifyCancelCurrentTask() {
+        OkDownload.with().downloadDispatcher().cancel(serialQueue.getWorkingTaskId());
     }
 
     private DownloadState getDownloadState(@NonNull DownloadTask task) {
