@@ -44,4 +44,7 @@ ext {
     androidXConstraintlayout = '2.0.4'
     googleAndroidMaterial = '1.4.0-alpha01'
     okDownload = '1.0.7+'
+
+    networkVersion= 213
+    networkVersionName= "2.1.3"
 }
