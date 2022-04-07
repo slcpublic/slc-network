@@ -35,5 +35,5 @@ dependencies {
     api "com.liulishuo.okdownload:okhttp:$okDownload"
     compileOnly project(path: ':okdownload-fix-bug')
     //api 'android.slc:or:0.1.2'
-    api "com.github.sunlunchang1994.slc_boxes:or:0.5.2"
+    api "com.gitee.slcpublic.slc-boxes:or:0.7.0"
 }
